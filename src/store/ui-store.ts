@@ -6,6 +6,8 @@ interface UIState {
   rightSidebarVisible: boolean
   commandPaletteOpen: boolean
   preferencesOpen: boolean
+  timeSeriesOpen: boolean
+  selectedTimeSeriesElement: { id: string; type: 'node' | 'edge' } | null
   lastQuickPaneEntry: string | null
 
   toggleLeftSidebar: () => void
@@ -16,6 +18,9 @@ interface UIState {
   setCommandPaletteOpen: (open: boolean) => void
   togglePreferences: () => void
   setPreferencesOpen: (open: boolean) => void
+  toggleTimeSeries: () => void
+  setTimeSeriesOpen: (open: boolean) => void
+  setSelectedTimeSeriesElement: (element: { id: string; type: 'node' | 'edge' } | null) => void
   setLastQuickPaneEntry: (text: string) => void
   setSquareCorners: (enabled: boolean) => void
 }
@@ -27,6 +32,8 @@ export const useUIStore = create<UIState>()(
       rightSidebarVisible: false,
       commandPaletteOpen: false,
       preferencesOpen: false,
+      timeSeriesOpen: false,
+      selectedTimeSeriesElement: null,
       lastQuickPaneEntry: null,
 
       toggleLeftSidebar: () =>
@@ -76,6 +83,19 @@ export const useUIStore = create<UIState>()(
 
       setPreferencesOpen: open =>
         set({ preferencesOpen: open }, undefined, 'setPreferencesOpen'),
+
+      toggleTimeSeries: () =>
+        set(
+          state => ({ timeSeriesOpen: !state.timeSeriesOpen }),
+          undefined,
+          'toggleTimeSeries'
+        ),
+
+      setTimeSeriesOpen: open =>
+        set({ timeSeriesOpen: open }, undefined, 'setTimeSeriesOpen'),
+
+      setSelectedTimeSeriesElement: element =>
+        set({ selectedTimeSeriesElement: element }, undefined, 'setSelectedTimeSeriesElement'),
 
       setLastQuickPaneEntry: text =>
         set({ lastQuickPaneEntry: text }, undefined, 'setLastQuickPaneEntry'),

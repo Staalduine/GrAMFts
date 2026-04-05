@@ -1,7 +1,7 @@
 use tauri_specta::{collect_commands, Builder};
 
 pub fn generate_bindings() -> Builder<tauri::Wry> {
-    use crate::commands::{graph, notifications, preferences, recovery};
+    use crate::commands::{graph, notifications, preferences, recovery, timeseries};
 
     Builder::<tauri::Wry>::new().commands(collect_commands![
         graph::load_graph,
@@ -13,6 +13,12 @@ pub fn generate_bindings() -> Builder<tauri::Wry> {
         recovery::save_emergency_data,
         recovery::load_emergency_data,
         recovery::cleanup_old_recovery_files,
+        timeseries::load_timeseries,
+        timeseries::save_timeseries,
+        timeseries::add_timeseries_point,
+        timeseries::query_timeseries_range,
+        timeseries::get_timeseries_ids,
+        timeseries::clear_timeseries,
     ])
 }
 

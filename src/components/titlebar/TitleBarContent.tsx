@@ -12,6 +12,7 @@ import {
   Upload,
   Calculator,
   Trash2,
+  Database,
 } from 'lucide-react'
 
 /**
@@ -58,12 +59,21 @@ export function TitleBarRightActions() {
   const loadGraph = useGraphStore(state => state.loadGraph)
   const computeCentrality = useGraphStore(state => state.computeCentrality)
   const removeSelected = useGraphStore(state => state.removeSelected)
+  const setTimeSeriesOpen = useUIStore(state => state.setTimeSeriesOpen)
+  const setSelectedTimeSeriesElement = useUIStore(state => state.setSelectedTimeSeriesElement)
 
   const handleOpenPreferences = async () => {
     const result = await executeCommand('open-preferences', commandContext)
     if (!result.success && result.error) {
       commandContext.showToast(result.error, 'error')
     }
+  }
+
+  const handleOpenTimeSeries = () => {
+    // For now, we'll show a placeholder - in a real implementation,
+    // you'd get the selected element from the graph
+    setSelectedTimeSeriesElement({ id: 'example-node', type: 'node' })
+    setTimeSeriesOpen(true)
   }
 
   return (
@@ -96,6 +106,16 @@ export function TitleBarRightActions() {
         title={t('graph.removeSelected', 'Remove Selected')}
       >
         <Trash2 className="h-3 w-3" />
+      </Button>
+
+      <Button
+        onClick={handleOpenTimeSeries}
+        variant="ghost"
+        size="icon"
+        className="h-6 w-6 text-foreground/70 hover:text-foreground"
+        title={t('timeseries.viewData', 'View Time Series Data')}
+      >
+        <Database className="h-3 w-3" />
       </Button>
 
       <Button

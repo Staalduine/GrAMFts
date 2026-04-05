@@ -7,3 +7,4 @@ pub mod graph;
 pub mod notifications;
 pub mod preferences;
 pub mod recovery;
+pub mod timeseries;

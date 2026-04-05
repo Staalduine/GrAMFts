@@ -112,6 +112,72 @@ async cleanupOldRecoveryFiles() : Promise<Result<number, RecoveryError>> {
     if(e instanceof Error) throw e;
     else return { status: "error", error: e  as any };
 }
+},
+/**
+ * Load time-series data for a specific ID
+ */
+async loadTimeseries(id: string) : Promise<Result<TimeSeriesPoint[], string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("load_timeseries", { id }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * Save time-series data for a specific ID (replaces existing data)
+ */
+async saveTimeseries(id: string, points: TimeSeriesPoint[]) : Promise<Result<null, string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("save_timeseries", { id, points }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * Add a single time-series data point
+ */
+async addTimeseriesPoint(id: string, timestamp: string, value: JsonValue) : Promise<Result<null, string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("add_timeseries_point", { id, timestamp, value }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * Query time-series data for an ID within a time range
+ */
+async queryTimeseriesRange(id: string, startTime: string | null, endTime: string | null) : Promise<Result<TimeSeriesPoint[], string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("query_timeseries_range", { id, startTime, endTime }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * Get all time-series IDs currently stored
+ */
+async getTimeseriesIds() : Promise<Result<string[], string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("get_timeseries_ids") };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * Clear all time-series data
+ */
+async clearTimeseries() : Promise<Result<null, string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("clear_timeseries") };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
 }
 }
 
@@ -161,6 +227,7 @@ export type RecoveryError =
  * JSON serialization/deserialization error
  */
 { type: "ParseError"; message: string }
+export type TimeSeriesPoint = { timestamp: string; value: JsonValue }
 
 /** tauri-specta globals **/
 
