@@ -12,7 +12,6 @@ mod utils;
 use tauri::{Manager, RunEvent, WindowEvent};
 
 // Re-export only what's needed externally
-pub use types::DEFAULT_QUICK_PANE_SHORTCUT;
 
 /// Application entry point. Sets up all plugins and initializes the app.
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
@@ -39,14 +38,11 @@ pub fn run() {
     }
 
     // Window state plugin - saves/restores window position and size
-    // Note: quick-pane is denylisted because it's an NSPanel and calling is_maximized() on it crashes
-    // See: https://github.com/tauri-apps/plugins-workspace/issues/1546
     #[cfg(desktop)]
     {
         app_builder = app_builder.plugin(
             tauri_plugin_window_state::Builder::new()
                 .with_state_flags(tauri_plugin_window_state::StateFlags::all())
-                .with_denylist(&["quick-pane"])
                 .build(),
         );
     }
@@ -114,27 +110,6 @@ pub fn run() {
                 use tauri_plugin_global_shortcut::Builder;
 
                 app.handle().plugin(Builder::new().build())?;
-            }
-
-            // Load saved preferences and register the quick pane shortcut
-            #[cfg(desktop)]
-            {
-                let saved_shortcut = commands::preferences::load_quick_pane_shortcut(app.handle());
-                let shortcut_to_register = saved_shortcut
-                    .as_deref()
-                    .unwrap_or(DEFAULT_QUICK_PANE_SHORTCUT);
-
-                log::info!("Registering quick pane shortcut: {shortcut_to_register}");
-                commands::quick_pane::register_quick_pane_shortcut(
-                    app.handle(),
-                    shortcut_to_register,
-                )?;
-            }
-
-            // Create the quick pane window (hidden) - must be done on main thread
-            if let Err(e) = commands::quick_pane::init_quick_pane(app.handle()) {
-                log::error!("Failed to create quick pane: {e}");
-                // Non-fatal: app can still run without quick pane
             }
 
             // NOTE: Application menu is built from JavaScript for i18n support

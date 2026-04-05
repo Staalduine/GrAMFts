@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
 import { useUIStore } from '@/store/ui-store'
+import { useGraphStore } from '@/store/graph-store'
 import { executeCommand, useCommandContext } from '@/lib/commands'
 import {
   PanelLeft,
@@ -8,6 +9,9 @@ import {
   PanelRight,
   PanelRightClose,
   Settings,
+  Upload,
+  Calculator,
+  Trash2,
 } from 'lucide-react'
 
 /**
@@ -51,6 +55,9 @@ export function TitleBarRightActions() {
   const rightSidebarVisible = useUIStore(state => state.rightSidebarVisible)
   const toggleRightSidebar = useUIStore(state => state.toggleRightSidebar)
   const commandContext = useCommandContext()
+  const loadGraph = useGraphStore(state => state.loadGraph)
+  const computeCentrality = useGraphStore(state => state.computeCentrality)
+  const removeSelected = useGraphStore(state => state.removeSelected)
 
   const handleOpenPreferences = async () => {
     const result = await executeCommand('open-preferences', commandContext)
@@ -61,6 +68,36 @@ export function TitleBarRightActions() {
 
   return (
     <div className="flex items-center gap-1">
+      <Button
+        onClick={loadGraph}
+        variant="ghost"
+        size="icon"
+        className="h-6 w-6 text-foreground/70 hover:text-foreground"
+        title={t('graph.loadGraph', 'Load Graph')}
+      >
+        <Upload className="h-3 w-3" />
+      </Button>
+
+      <Button
+        onClick={computeCentrality}
+        variant="ghost"
+        size="icon"
+        className="h-6 w-6 text-foreground/70 hover:text-foreground"
+        title={t('graph.computeCentrality', 'Compute Centrality')}
+      >
+        <Calculator className="h-3 w-3" />
+      </Button>
+
+      <Button
+        onClick={removeSelected}
+        variant="ghost"
+        size="icon"
+        className="h-6 w-6 text-foreground/70 hover:text-foreground"
+        title={t('graph.removeSelected', 'Remove Selected')}
+      >
+        <Trash2 className="h-3 w-3" />
+      </Button>
+
       <Button
         onClick={handleOpenPreferences}
         variant="ghost"
